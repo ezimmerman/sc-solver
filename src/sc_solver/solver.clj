@@ -2,6 +2,10 @@
   (:require [ubergraph.core :as uber]
             [ubergraph.alg :as alg]))
 
+(def store "store")
+
+(def dc "dc")
+
 (defn get-flow-amount [graph edge]
   (uber/attr graph edge :flow-amount))
 
@@ -19,18 +23,15 @@
   [graph edge]
   (uber/attr graph (uber/dest edge) :type))
 
-(defn is-dest-node-store? [graph edge]
-  (if (= (get-edge-dest-type graph edge) "store") true false))
-
 (defn is-store-node?
   [graph node]
-  (= (uber/attr graph node :type) "store"))
+  (= (uber/attr graph node :type) store))
+
+(defn is-dest-node-store? [graph edge]
+  (if (= (get-edge-dest-type graph edge) store) true false))
 
 (defn get-graph-start-node [graph]
   :vendor-0)
-
-(def graph-end-nodes
-  [:store-0 :store-1 :store-2])
 
 (defn incremment-flow-amount
   [graph edge]
@@ -41,8 +42,6 @@
   [path graph]
   (let [edges (alg/edges-in-path path)]
     (reduce incremment-flow-amount graph edges)))
-
-
 
 (defn utility-fn
   "Given an edge calcuate the utility of the next product"
