@@ -100,7 +100,7 @@
     (if (have-end-nodes? g)
       (let [path (alg/shortest-path g {:start-node (get-graph-start-node g) :end-node? (is-end-node-fn g) :cost-fn (utility-fn g) :edge-filter (is-edge-valid-fn g)})]
        (if (nil? path)
-         (uber/viz-graph g {:auto-label true})
+         g
          (recur (incremment-flow-amounts path g))))
-      (uber/viz-graph g {:auto-label true}))))
+      g)))
 

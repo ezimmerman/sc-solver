@@ -15,7 +15,7 @@
 (defrecord Product-chunker [status msg-chan response-chan]
   component/Lifecycle
   (start [component]
-    (reset! (:status component):runing)
+    (reset! (:status component):running)
     (process-schedules status msg-chan response-chan)
     component)
   (stop [component]

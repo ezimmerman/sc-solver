@@ -17,7 +17,7 @@
   "Given a schedule, create and connect source and destination from schedule."
   [schedule]
   (let [{:keys [source destination]} schedule]
-    [(keyword (:name source)) (keyword (:name destination)) (hash-map :lead-time (:lead-time schedule))]))
+    [(keyword (:name source)) (keyword (:name destination)) (hash-map :lead-time (:lead-time schedule) :flow-amount 0)]))
 
 
 (defn assemble-network
@@ -38,7 +38,7 @@
 (defrecord Assemble-network [status msg-chan response-chan]
   component/Lifecycle
   (start [component]
-    (reset! (:status component):runing)
+    (reset! (:status component):running)
     (process-schedules status msg-chan response-chan)
     component)
   (stop [component]
