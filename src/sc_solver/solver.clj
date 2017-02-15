@@ -31,7 +31,7 @@
   (if (= (get-edge-dest-type graph edge) store) true false))
 
 (defn get-graph-start-node [graph]
-  :vendor-0)
+  :vendor)
 
 (defn incremment-flow-amount
   [graph edge]
@@ -50,7 +50,9 @@
                (case dest
                  "store" (let [total-inventory (+ (get-flow-amount graph edge) (get-existing-inventory graph edge))
                                target-inventory (get-target-inventory graph edge)]
-                           (* (/ (- target-inventory total-inventory) target-inventory) -1))
+                           (cond
+                             (>= total-inventory target-inventory) (Integer/MAX_VALUE)
+                             :else (* (/ (- target-inventory total-inventory) target-inventory) -1)))
                  "dc" 0))))
 
 (defn is-edge-under-max-constraint? [graph edge]

@@ -16,7 +16,7 @@
 
 (defn make-vendor
   [number]
-  (->Vendor (str "vendor" "-" number) "vendor"))
+  (->Vendor "vendor" "vendor" number))
 
 (defn make-store
   [number inventory target]
