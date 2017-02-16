@@ -1,7 +1,8 @@
 (ns sc-solver.components.order-plan-writer
   (:require [cheshire.core :refer :all]
             [com.stuartsierra.component :as component]
-            [clojure.core.async :as async]))
+            [clojure.core.async :as async]
+            [clojure.tools.logging :as log]))
 
 (def op-directory "/Users/ezimmerman/clojure/sc-solver/plans/")
 
@@ -15,17 +16,18 @@
 
 (defn process-order-plans [status msg-chan]
   (async/go (while (= @status :running)
+              (log/info "Writer pickd up msg.")
               (write-order-plans (async/<! msg-chan)))
             (async/close! msg-chan)))
 
 (defrecord Order-plan-writer [status msg-chan]
   component/Lifecycle
   (start [component]
-    (reset! (:status component):running)
+    (reset! (:status component) :running)
     (process-order-plans status msg-chan)
     component)
   (stop [component]
-    (reset! (:status component):stopped)
+    (reset! (:status component) :stopped)
     component))
 
 (defn new-order-plan-writer [msg-request-chan]

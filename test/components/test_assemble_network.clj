@@ -17,4 +17,4 @@
 (deftest test-assemble-network
   (do (assemble/process-schedules component-state req-ch response-ch)
       (async/>!! req-ch msg)
-      (is (= 7 (uber/count-nodes  (async/<!! response-ch))))))
+      (is (= 7 (uber/count-nodes (async/<!! response-ch))))))

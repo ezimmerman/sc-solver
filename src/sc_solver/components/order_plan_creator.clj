@@ -4,7 +4,8 @@
             [clojure.core.async :as async]
             [sc-solver.solver :as solver]
             [ubergraph.core :as uber]
-            [ubergraph.alg :as alg])
+            [ubergraph.alg :as alg]
+            [clojure.tools.logging :as log])
   (:import (java.util Date)))
 
 
@@ -25,6 +26,7 @@
 (defn process-graphs [status msg-chan response-chan]
   (async/go (while (= @status :running)
               (let [graph (async/<! msg-chan)
+                    edges (uber/find-edges graph {:src (solver/get-graph-start-node graph)})
                     order-plans (create-plans graph)]
                 (async/>! response-chan order-plans)))
             (async/close! msg-chan)))
@@ -32,11 +34,11 @@
 (defrecord Order-plan-creator [status msg-chan msg-response-chan]
   component/Lifecycle
   (start [component]
-    (reset! (:status component):running)
+    (reset! (:status component) :running)
     (process-graphs status msg-chan msg-response-chan)
     component)
   (stop [component]
-    (reset! (:status component):stopped)
+    (reset! (:status component) :stopped)
     component))
 
 (defn new-order-plan-creator [msg-request-chan msg-response-chan]

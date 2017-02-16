@@ -1,6 +1,7 @@
 (ns sc-solver.components.product-chunker
   (:require [com.stuartsierra.component :as component]
-            [clojure.core.async :as async]))
+            [clojure.core.async :as async]
+            [clojure.tools.logging :as log]))
 
 ; Component that expects a map that contains a key :product
 ; groups the same products in a single vector.
@@ -15,11 +16,11 @@
 (defrecord Product-chunker [status msg-chan response-chan]
   component/Lifecycle
   (start [component]
-    (reset! (:status component):running)
+    (reset! (:status component) :running)
     (process-schedules status msg-chan response-chan)
     component)
   (stop [component]
-    (reset! (:status component):stopped)
+    (reset! (:status component) :stopped)
     component))
 
 (defn new-product-chunker [msg-request-chan msg-response-chan]

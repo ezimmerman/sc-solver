@@ -18,79 +18,79 @@
                  ))
 
 (def graph-dc-store-constrained (-> (uber/digraph
-                   [:vendor {:type "vendor" :name "vendor" :product 0}]
-                   [:dc-0 {:name "dc-0" :type "dc"}]
-                   [:store-0 {:inventory 2 :target 5 :type "store"}]
-                   [:store-1 {:inventory 5 :target 5 :type "store"}]
-                   [:store-2 {:inventory 3 :target 5 :type "store"}])
-                                    (uber/add-directed-edges [:vendor :dc-0 {:flow-amount 0 :lead-time 1 :max nil}]
-                                          [:dc-0 :store-0 {:flow-amount 0 :lead-time 2 :max 1}]
-                                          [:dc-0 :store-1 {:flow-amount 0 :lead-time 2 :max nil}]
-                                          [:dc-0 :store-2 {:flow-amount 0 :lead-time 3 :max nil}])
-                                    ))
-
-(def graph-vendor-dc-constrained (-> (uber/digraph
                                       [:vendor {:type "vendor" :name "vendor" :product 0}]
                                       [:dc-0 {:name "dc-0" :type "dc"}]
                                       [:store-0 {:inventory 2 :target 5 :type "store"}]
                                       [:store-1 {:inventory 5 :target 5 :type "store"}]
                                       [:store-2 {:inventory 3 :target 5 :type "store"}])
-                                    (uber/add-directed-edges [:vendor :dc-0 {:flow-amount 0 :lead-time 1 :max 1}]
-                                                             [:dc-0 :store-0 {:flow-amount 0 :lead-time 2 :max nil}]
+                                    (uber/add-directed-edges [:vendor :dc-0 {:flow-amount 0 :lead-time 1 :max nil}]
+                                                             [:dc-0 :store-0 {:flow-amount 0 :lead-time 2 :max 1}]
                                                              [:dc-0 :store-1 {:flow-amount 0 :lead-time 2 :max nil}]
                                                              [:dc-0 :store-2 {:flow-amount 0 :lead-time 3 :max nil}])
                                     ))
-(def graph-large (-> (uber/digraph
+
+(def graph-vendor-dc-constrained (-> (uber/digraph
                                        [:vendor {:type "vendor" :name "vendor" :product 0}]
                                        [:dc-0 {:name "dc-0" :type "dc"}]
-                                       [:dc-1 {:name "dc-1" :type "dc"}]
                                        [:store-0 {:inventory 2 :target 5 :type "store"}]
                                        [:store-1 {:inventory 5 :target 5 :type "store"}]
-                                       [:store-2 {:inventory 3 :target 5 :type "store"}]
-                                       [:store-3 {:inventory 3 :target 5 :type "store"}]
-                                       [:store-4 {:inventory 3 :target 10 :type "store"}]
-                                       [:store-5 {:inventory 3 :target 5 :type "store"}]
-                                       [:store-6 {:inventory 3 :target 5 :type "store"}]
-                                       [:store-7 {:inventory 3 :target 5 :type "store"}]
-                                       [:store-8 {:inventory 3 :target 25 :type "store"}]
-                                       [:store-9 {:inventory 3 :target 5 :type "store"}]
-                                       [:store-10 {:inventory 3 :target 5 :type "store"}]
-                                       [:store-11 {:inventory 2 :target 5 :type "store"}]
-                                       [:store-12 {:inventory 5 :target 5 :type "store"}]
-                                       [:store-13 {:inventory 3 :target 5 :type "store"}]
-                                       [:store-14 {:inventory 3 :target 5 :type "store"}]
-                                       [:store-15 {:inventory 3 :target 35 :type "store"}]
-                                       [:store-16 {:inventory 3 :target 8 :type "store"}]
-                                       [:store-17 {:inventory 3 :target 5 :type "store"}]
-                                       [:store-18 {:inventory 3 :target 12 :type "store"}]
-                                       [:store-19 {:inventory 3 :target 5 :type "store"}]
-                                       [:store-20 {:inventory 3 :target 5 :type "store"}]
-                                       [:store-21 {:inventory 3 :target 50 :type "store"}])
-                                     (uber/add-directed-edges [:vendor :dc-0 {:flow-amount 0 :lead-time 1 :max nil}]
-                                                              [:vendor :dc-1 {:flow-amount 0 :lead-time 1 :max nil}]
+                                       [:store-2 {:inventory 3 :target 5 :type "store"}])
+                                     (uber/add-directed-edges [:vendor :dc-0 {:flow-amount 0 :lead-time 1 :max 1}]
                                                               [:dc-0 :store-0 {:flow-amount 0 :lead-time 2 :max nil}]
                                                               [:dc-0 :store-1 {:flow-amount 0 :lead-time 2 :max nil}]
-                                                              [:dc-0 :store-2 {:flow-amount 0 :lead-time 3 :max nil}]
-                                                              [:dc-0 :store-3 {:flow-amount 0 :lead-time 3 :max nil}]
-                                                              [:dc-0 :store-4 {:flow-amount 0 :lead-time 3 :max nil}]
-                                                              [:dc-0 :store-5 {:flow-amount 0 :lead-time 3 :max nil}]
-                                                              [:dc-0 :store-6 {:flow-amount 0 :lead-time 3 :max nil}]
-                                                              [:dc-0 :store-7 {:flow-amount 0 :lead-time 10 :max nil}]
-                                                              [:dc-0 :store-8 {:flow-amount 0 :lead-time 3 :max nil}]
-                                                              [:dc-0 :store-9 {:flow-amount 0 :lead-time 3 :max nil}]
-                                                              [:dc-0 :store-10 {:flow-amount 0 :lead-time 3 :max nil}]
-                                                              [:dc-1 :store-11 {:flow-amount 0 :lead-time 2 :max nil}]
-                                                              [:dc-1 :store-12 {:flow-amount 0 :lead-time 2 :max nil}]
-                                                              [:dc-1 :store-13 {:flow-amount 0 :lead-time 3 :max nil}]
-                                                              [:dc-1 :store-14 {:flow-amount 0 :lead-time 8 :max nil}]
-                                                              [:dc-1 :store-15 {:flow-amount 0 :lead-time 3 :max nil}]
-                                                              [:dc-1 :store-16 {:flow-amount 0 :lead-time 3 :max nil}]
-                                                              [:dc-1 :store-17 {:flow-amount 0 :lead-time 5 :max nil}]
-                                                              [:dc-1 :store-18 {:flow-amount 0 :lead-time 3 :max nil}]
-                                                              [:dc-1 :store-19 {:flow-amount 0 :lead-time 4 :max nil}]
-                                                              [:dc-1 :store-20 {:flow-amount 0 :lead-time 3 :max nil}]
-                                                              [:dc-1 :store-21 {:flow-amount 0 :lead-time 3 :max nil}])
+                                                              [:dc-0 :store-2 {:flow-amount 0 :lead-time 3 :max nil}])
                                      ))
+(def graph-large (-> (uber/digraph
+                       [:vendor {:type "vendor" :name "vendor" :product 0}]
+                       [:dc-0 {:name "dc-0" :type "dc"}]
+                       [:dc-1 {:name "dc-1" :type "dc"}]
+                       [:store-0 {:inventory 2 :target 5 :type "store"}]
+                       [:store-1 {:inventory 5 :target 5 :type "store"}]
+                       [:store-2 {:inventory 3 :target 5 :type "store"}]
+                       [:store-3 {:inventory 3 :target 5 :type "store"}]
+                       [:store-4 {:inventory 3 :target 10 :type "store"}]
+                       [:store-5 {:inventory 3 :target 5 :type "store"}]
+                       [:store-6 {:inventory 3 :target 5 :type "store"}]
+                       [:store-7 {:inventory 3 :target 5 :type "store"}]
+                       [:store-8 {:inventory 3 :target 25 :type "store"}]
+                       [:store-9 {:inventory 3 :target 5 :type "store"}]
+                       [:store-10 {:inventory 3 :target 5 :type "store"}]
+                       [:store-11 {:inventory 2 :target 5 :type "store"}]
+                       [:store-12 {:inventory 5 :target 5 :type "store"}]
+                       [:store-13 {:inventory 3 :target 5 :type "store"}]
+                       [:store-14 {:inventory 3 :target 5 :type "store"}]
+                       [:store-15 {:inventory 3 :target 35 :type "store"}]
+                       [:store-16 {:inventory 3 :target 8 :type "store"}]
+                       [:store-17 {:inventory 3 :target 5 :type "store"}]
+                       [:store-18 {:inventory 3 :target 12 :type "store"}]
+                       [:store-19 {:inventory 3 :target 5 :type "store"}]
+                       [:store-20 {:inventory 3 :target 5 :type "store"}]
+                       [:store-21 {:inventory 3 :target 50 :type "store"}])
+                     (uber/add-directed-edges [:vendor :dc-0 {:flow-amount 0 :lead-time 1 :max nil}]
+                                              [:vendor :dc-1 {:flow-amount 0 :lead-time 1 :max nil}]
+                                              [:dc-0 :store-0 {:flow-amount 0 :lead-time 2 :max nil}]
+                                              [:dc-0 :store-1 {:flow-amount 0 :lead-time 2 :max nil}]
+                                              [:dc-0 :store-2 {:flow-amount 0 :lead-time 3 :max nil}]
+                                              [:dc-0 :store-3 {:flow-amount 0 :lead-time 3 :max nil}]
+                                              [:dc-0 :store-4 {:flow-amount 0 :lead-time 3 :max nil}]
+                                              [:dc-0 :store-5 {:flow-amount 0 :lead-time 3 :max nil}]
+                                              [:dc-0 :store-6 {:flow-amount 0 :lead-time 3 :max nil}]
+                                              [:dc-0 :store-7 {:flow-amount 0 :lead-time 10 :max nil}]
+                                              [:dc-0 :store-8 {:flow-amount 0 :lead-time 3 :max nil}]
+                                              [:dc-0 :store-9 {:flow-amount 0 :lead-time 3 :max nil}]
+                                              [:dc-0 :store-10 {:flow-amount 0 :lead-time 3 :max nil}]
+                                              [:dc-1 :store-11 {:flow-amount 0 :lead-time 2 :max nil}]
+                                              [:dc-1 :store-12 {:flow-amount 0 :lead-time 2 :max nil}]
+                                              [:dc-1 :store-13 {:flow-amount 0 :lead-time 3 :max nil}]
+                                              [:dc-1 :store-14 {:flow-amount 0 :lead-time 8 :max nil}]
+                                              [:dc-1 :store-15 {:flow-amount 0 :lead-time 3 :max nil}]
+                                              [:dc-1 :store-16 {:flow-amount 0 :lead-time 3 :max nil}]
+                                              [:dc-1 :store-17 {:flow-amount 0 :lead-time 5 :max nil}]
+                                              [:dc-1 :store-18 {:flow-amount 0 :lead-time 3 :max nil}]
+                                              [:dc-1 :store-19 {:flow-amount 0 :lead-time 4 :max nil}]
+                                              [:dc-1 :store-20 {:flow-amount 0 :lead-time 3 :max nil}]
+                                              [:dc-1 :store-21 {:flow-amount 0 :lead-time 3 :max nil}])
+                     ))
 
 
 (deftest test-get-flow-amount
@@ -130,7 +130,7 @@
     (is (= false (is-end-node dc-node)))))
 
 (deftest test-is-dest-node-store?
-  (is (= true (s/is-dest-node-store? graph-1  (uber/find-edge graph-1 :dc-0 :store-0)))))
+  (is (= true (s/is-dest-node-store? graph-1 (uber/find-edge graph-1 :dc-0 :store-0)))))
 
 (deftest test-incremment-flow-amounts
   (let [path (alg/shortest-path graph-1 {:start-node :vendor :end-nodes [:store-0 :store-1 :store-2] :cost-fn (s/utility-fn graph-1)})

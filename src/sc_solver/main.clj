@@ -33,4 +33,4 @@
 (defn -main
   "App entry point"
   []
-  (start-app ))
+  (start-app))

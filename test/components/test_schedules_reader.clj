@@ -8,8 +8,8 @@
 
 
 (deftest test-filter
-         (do (reader/read-schedules component-state response-ch)
-             (is (= 0 (get (first (async/<!! response-ch)) :product)))))
+  (do (reader/read-schedules component-state response-ch)
+      (is (= 0 (get (first (async/<!! response-ch)) :product)))))
 
 (deftest print-filter
   (do (reader/read-schedules component-state response-ch)

@@ -22,27 +22,24 @@
 
 (defn assemble-network
   [schedules]
-   (-> (uber/digraph)
-         (uber/add-nodes-with-attrs* (mapcat create-nodes-for-schedule schedules))
-         (uber/add-directed-edges* (map create-edges-for-schedule schedules))))
+  (-> (uber/digraph)
+      (uber/add-nodes-with-attrs* (mapcat create-nodes-for-schedule schedules))
+      (uber/add-directed-edges* (map create-edges-for-schedule schedules))))
 
-
+;Todo externalize the number of processes.
 (defn process-schedules [status msg-chan response-chan]
   "Expects the msg to be a map of product number to schedules. Sends a created network on the response channel."
-  (async/go (while (= @status :running)
-              (let [msg (async/<! msg-chan)
-                    network (assemble-network msg)]
-                (async/>! response-chan network)))
-            (async/close! msg-chan)))
+  (async/pipeline 4 response-chan (map assemble-network) msg-chan))
+
 
 (defrecord Assemble-network [status msg-chan response-chan]
   component/Lifecycle
   (start [component]
-    (reset! (:status component):running)
+    (reset! (:status component) :running)
     (process-schedules status msg-chan response-chan)
     component)
   (stop [component]
-    (reset! (:status component):stopped)
+    (reset! (:status component) :stopped)
     component))
 
 (defn new-assemble-network [msg-request-chan msg-response-chan]

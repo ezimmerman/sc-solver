@@ -92,7 +92,7 @@
         :else false))))
 
 (defn have-end-nodes? [g]
-  (let [nodes (filter #(is-store-node? g %)  (uber/nodes g))]
+  (let [nodes (filter #(is-store-node? g %) (uber/nodes g))]
     (reduce #(if (is-edges-to-end-node-valid? g %2) (reduced true) %) false nodes)))
 
 (defn flow-graph
@@ -101,8 +101,8 @@
   (loop [g graph]
     (if (have-end-nodes? g)
       (let [path (alg/shortest-path g {:start-node (get-graph-start-node g) :end-node? (is-end-node-fn g) :cost-fn (utility-fn g) :edge-filter (is-edge-valid-fn g)})]
-       (if (nil? path)
-         g
-         (recur (incremment-flow-amounts path g))))
+        (if (nil? path)
+          g
+          (recur (incremment-flow-amounts path g))))
       g)))
 

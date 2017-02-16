@@ -10,7 +10,8 @@
                  [org.clojure/core.async "0.2.395"]
                  [levand/immuconf "0.1.0"]
                  [environ "1.1.0"]
-                 [cheshire "5.7.0"]]
+                 [cheshire "5.7.0"]
+                 [org.clojure/tools.logging "0.3.1"]]
   :target-path "target/%s"
   :plugins [[lein-environ "1.1.0"]]
   :main ^:skip-aot sc-solver.main

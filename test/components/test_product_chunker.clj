@@ -15,7 +15,3 @@
       (async/>!! req-ch msg)
       (is (= 6 (count (async/<!! response-ch))))))
 
-(deftest print-chunker
-  (do (chunker/process-schedules component-state req-ch response-ch)
-      (async/>!! req-ch msg)
-      (println (async/<!! response-ch))))

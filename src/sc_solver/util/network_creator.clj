@@ -29,16 +29,16 @@
 (defn- make-schedule
   "creates in individual d/Schedule"
   [product source destination]
-  (->Schedule product source destination "DAILY" (rand-int 5) ))
+  (->Schedule product source destination "DAILY" (rand-int 5)))
 
 (defn make-schedules
   "Returns a vector of d/Schedule. Evenly distribute the number of stores across the dcs."
   [product vendor dcs stores]
-     (let [vendor-dcs (map #(make-schedule product vendor %) dcs)
-           partitioned-stores (partition (count dcs) stores)
-           dcs-stores (mapcat (fn [dc stores]
+  (let [vendor-dcs (map #(make-schedule product vendor %) dcs)
+        partitioned-stores (partition (count dcs) stores)
+        dcs-stores (mapcat (fn [dc stores]
                              (map (fn [store] (make-schedule product dc store)) stores)) dcs partitioned-stores)]
-       (lazy-cat vendor-dcs dcs-stores)) )
+    (lazy-cat vendor-dcs dcs-stores)))
 
 
 (defn network

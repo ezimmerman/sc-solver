@@ -11,6 +11,6 @@
 (def component-state (atom :running))
 
 (deftest test-network-solver
-         (do (solver/process-graphs component-state req-ch response-ch)
-             (async/>!! req-ch test-solver/graph-1)
-             (is (= 5 (uber/count-nodes (async/<!! response-ch))))))
+  (do (solver/process-graphs component-state req-ch response-ch)
+      (async/>!! req-ch test-solver/graph-1)
+      (is (= 5 (uber/count-nodes (async/<!! response-ch))))))
