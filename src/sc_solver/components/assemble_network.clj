@@ -3,8 +3,10 @@
             [sc-solver.domain :refer :all]
             [clojure.core.async :as async]
             [ubergraph.core :as uber]
-            [ubergraph.alg :as alg]))
+            [ubergraph.alg :as alg]
+            [environ.core :refer [env]]))
 
+(def assemble-procs (read-string (env :assemble-procs)))
 
 (defn create-nodes-for-schedule
   "Given a schedule, break them into a vector of nodes with attrs."
@@ -25,10 +27,9 @@
       (uber/add-nodes-with-attrs* (mapcat create-nodes-for-schedule schedules))
       (uber/add-directed-edges* (map create-edges-for-schedule schedules))))
 
-;Todo externalize the number of processes.
 (defn process-schedules [status msg-chan response-chan]
   "Expects the msg to be a map of product number to schedules. Sends a created network on the response channel."
-  (async/pipeline 4 response-chan (map assemble-network) msg-chan))
+  (async/pipeline assemble-procs response-chan (map assemble-network) msg-chan))
 
 
 (defrecord Assemble-network [status msg-chan response-chan]

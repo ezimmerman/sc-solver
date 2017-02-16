@@ -2,12 +2,13 @@
   (:require [com.stuartsierra.component :as component]
             [clojure.core.async :as async]
             [sc-solver.solver :as solver]
-            [clojure.tools.logging :as log]))
+            [clojure.tools.logging :as log]
+            [environ.core :refer [env]]))
 
+(def solver-procs (read-string (env :solver-procs)))
 
-;Todo externalize the number of processes.
 (defn process-graphs [status msg-chan response-chan]
-  (async/pipeline 4 response-chan (map solver/flow-graph) msg-chan))
+  (async/pipeline solver-procs response-chan (map solver/flow-graph) msg-chan))
 
 (defrecord Network-solver [status msg-chan response-chan]
   component/Lifecycle

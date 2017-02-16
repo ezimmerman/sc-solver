@@ -2,13 +2,16 @@
   (:require [cheshire.core :refer :all]
             [com.stuartsierra.component :as component]
             [clojure.core.async :as async]
-            [clojure.tools.logging :as log]))
-;Todo remove hard coding.
-(def op-directory "/Users/ezimmerman/clojure/sc-solver/plans/")
+            [clojure.tools.logging :as log]
+            [clojure.java.io :as io]
+            [environ.core :refer [env]]))
+
+(def op-directory
+   (env :plans))
 
 ;Todo remove UUID and create sensible file names.
 (defn write-order-plans [ops]
-  (let [file-name (str op-directory "order-plan" (str (java.util.UUID/randomUUID)) ".json")
+  (let [file-name (str  op-directory "order-plan" (str (java.util.UUID/randomUUID)) ".json")
         op-json (generate-string ops)]
     (spit file-name op-json)))
 
