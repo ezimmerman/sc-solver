@@ -5,7 +5,6 @@
             [ubergraph.core :as uber]
             [ubergraph.alg :as alg]))
 
-(def graph (uber/digraph))
 
 (defn create-nodes-for-schedule
   "Given a schedule, break them into a vector of nodes with attrs."

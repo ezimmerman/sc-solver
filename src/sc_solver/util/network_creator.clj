@@ -50,6 +50,7 @@
     (make-schedules product vendor dcs stores))
   )
 
+;Todo support a range of days accross products.
 (defn make-network
   "Reads in env and creates a seq of schedules"
   []

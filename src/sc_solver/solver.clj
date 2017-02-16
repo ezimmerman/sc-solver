@@ -43,6 +43,7 @@
   (let [edges (alg/edges-in-path path)]
     (reduce incremment-flow-amount graph edges)))
 
+;Todo change implementation to use natural numbers.  Would expect speed increase.
 (defn utility-fn
   "Given an edge calcuate the utility of the next product"
   [graph]
@@ -96,7 +97,7 @@
     (reduce #(if (is-edges-to-end-node-valid? g %2) (reduced true) %) false nodes)))
 
 (defn flow-graph
-  "Given a graph continue to solve it until we can't send product to stores."
+  "Given a graph recur to solve it until we can't send any more product to stores."
   [graph]
   (loop [g graph]
     (if (have-end-nodes? g)
