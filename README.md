@@ -11,13 +11,17 @@ the stores.
 
 A max can be set on any edge and the solver will honor the max.
 
-When the solver is done it will launch a visual of the solved graph with graphviz.  You can inspect the flow-amounts
-on the edges to see how much product has been allocated.
+There are a couple of ways to run this.  This first is to execute the sample graphs found in the test-solver namespace.
+A visual can be launched of a sample graph before the graph is solved, and after the graph is solved.
+
+The second way of running this is auto solving generated networks and saving them to the file system.
+
+See below for details on how to run each.
 
 ## Motivation
 To show a graph library can be used to greatly simplify the SC problem space.
 
-## Getting Started
+## Getting Started  with visual sample
 ### Prerequisites ###
 
 [Leiningen] (http://leiningen.org)
@@ -48,7 +52,38 @@ View any of the graphs before being solved using:
     `(uber/viz-graph graph-1 {:auto-label true})`
     
 Run the solver using:
-    `(s/flow-graph graph-1)`
+    `(uber/viz-graph (s/flow-graph graph-1) {:auto-label true})`
+    
+When the solver is done it will launch a visual of the solved graph with graphviz.  You can inspect the flow-amounts
+on the edges to see how much product has been allocated.    
+
+## Getting Started with solving networks and writing order plans.    
+
+### Installing
+
+From working leiningen installation
+- lein install
+
+#### Running solving generated order plans.
+- Start a REPL using `lein with-profile default,dev repl`
+- Switch to the main namespace using `(in-ns 'sc-solver.main)`
+- In the repl execute `(start-app)` Start app doesn't exit at this time, you will know sc-solver is done when
+the number of plans saved in the configured plans location equals the number of products configured (see below for configuration).
+On unix you can check the number of plans written with `ls *.json | wc -l` in the saved plans directory.
+
+##### Configuration options.
+sc-solver/profiles.clj provides a number of configuration options for the dev, and test leiningen profiles.
+The sc-solver.util.network-creator namespace will create a random network based on the profiles settings.
+Your can control the width of the network by configuring the number of DCs, stores, and products in the network.
+The network will always be a single vendor, to the number of configured dcs to stores.  Dcs and Stores will be spread evenly
+across the network.  :products determines the number of products you are solving for so a value of 1000 would create 1000
+networks to solve for. Days configuration is currently not supported, it will solve for a single day.  The location of where the plans are saved is
+configured by :plans.  :Solver-procs and :assemble-procs determines the number of concurrent processes that are used for that logic.
+Solving the network is expensive, so turning up or down the solver-procs number has a big impact on cpu usage and time to solve
+the ordering problem.
+
+The default settings for the dev env will create 1000 networks of a single vendor to 5 DCs and 20 stores, and will save them to
+the sc-solver/plans directory.  The format of the saved plans is a ship date, source, destination, and order qty in json format.
     
 Tests written on core functions using clojre.test
 Tests can be found under sc-sover/test

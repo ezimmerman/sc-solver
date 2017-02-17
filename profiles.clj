@@ -10,9 +10,5 @@
               :products "1"
               :days     "1"
               :plans    "./plans"
-              :solver-procs   "6"
-              :assemble-procs "4"}}
- :prod {:env {:dcs      "5"
-              :stores   "20"
-              :products "1"
-              :days     "1000"}}}
+              :solver-procs   "1"
+              :assemble-procs "1"}}}

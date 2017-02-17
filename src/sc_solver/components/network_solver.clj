@@ -7,19 +7,17 @@
 
 (def solver-procs (read-string (env :solver-procs)))
 
-(defn process-graphs [status msg-chan response-chan]
+(defn process-graphs [msg-chan response-chan]
   (async/pipeline solver-procs response-chan (map solver/flow-graph) msg-chan))
 
-(defrecord Network-solver [status msg-chan response-chan]
+(defrecord Network-solver [msg-chan response-chan]
   component/Lifecycle
   (start [component]
-    (reset! (:status component) :running)
-    (process-graphs status msg-chan response-chan)
+    (process-graphs msg-chan response-chan)
     component)
   (stop [component]
-    (reset! (:status component) :stopped)
     component))
 
-;Todo clean up, we don't have a process here anymore.
+
 (defn new-network-solver [msg-request-chan msg-response-chan]
-  (->Network-solver (atom :init) msg-request-chan msg-response-chan))
+  (->Network-solver msg-request-chan msg-response-chan))
