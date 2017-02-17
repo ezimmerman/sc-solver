@@ -105,7 +105,7 @@
 
 (deftest test-utility-fn
   (let [utility-fn (s/utility-fn graph-1)]
-    (is (= -3/5 (utility-fn (uber/find-edge graph-1 :dc-0 :store-0))))))
+    (is (= 5/3 (utility-fn (uber/find-edge graph-1 :dc-0 :store-0))))))
 
 (deftest is-edge-valid-fn
   (let [is-edge-valid-1? (s/is-edge-valid-fn graph-1)

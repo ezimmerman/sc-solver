@@ -43,7 +43,6 @@
   (let [edges (alg/edges-in-path path)]
     (reduce incremment-flow-amount graph edges)))
 
-;Todo change implementation to use natural numbers.  Would expect speed increase.
 (defn utility-fn
   "Given an edge calcuate the utility of the next product"
   [graph]
@@ -53,7 +52,7 @@
                                target-inventory (get-target-inventory graph edge)]
                            (cond
                              (>= total-inventory target-inventory) (Integer/MAX_VALUE)
-                             :else (* (/ (- target-inventory total-inventory) target-inventory) -1)))
+                             :else  (/ target-inventory (- target-inventory total-inventory))))
                  "dc" 0))))
 
 (defn is-edge-under-max-constraint? [graph edge]
@@ -78,7 +77,8 @@
   (fn [edge]
     (let [utility-fn (utility-fn graph)]
       (cond
-        (and (is-dest-node-store? graph edge) (is-edge-under-max-constraint? graph edge)) (> 0 (utility-fn edge))
+        (= Integer/MAX_VALUE (utility-fn edge)) false
+        (and (is-dest-node-store? graph edge) (is-edge-under-max-constraint? graph edge) (not= Integer/MAX_VALUE (utility-fn edge))) (< 0 (utility-fn edge))
         (and (is-dest-node-store? graph edge) (not (is-edge-under-max-constraint? graph edge))) false
         :else true))))
 
@@ -89,7 +89,7 @@
     (let [utility-fn (utility-fn graph)]
 
       (cond
-        (and (is-store-node? graph node) (is-edges-to-end-node-valid? graph node)) (> 0 (utility-fn (first (uber/in-edges graph node))))
+        (and (is-store-node? graph node) (is-edges-to-end-node-valid? graph node)) (< 0 (utility-fn (first (uber/in-edges graph node))))
         :else false))))
 
 (defn have-end-nodes? [g]

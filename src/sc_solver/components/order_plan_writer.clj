@@ -9,14 +9,11 @@
 (def op-directory
    (env :plans))
 
-;Todo remove UUID and create sensible file names.
 (defn write-order-plans [ops]
-  (let [file-name (str  op-directory "order-plan" (str (java.util.UUID/randomUUID)) ".json")
+  (let [product (:product (first ops))
+        file-name (str  op-directory "order-plan-product-" product ".json")
         op-json (generate-string ops)]
     (spit file-name op-json)))
-
-;(defn write-order-plans [ops]
-;  (map write-plan (first ops)))
 
 (defn process-order-plans [status msg-chan]
   (async/go (while (= @status :running)
