@@ -1,5 +1,5 @@
-{:dev  {:env {:dcs            "5"
-              :stores         "20"
+{:dev  {:env {:dcs            "10"
+              :stores         "200"
               :products       "1000"
               :days           "30"
               :plans          "./plans/"

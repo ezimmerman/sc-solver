@@ -23,23 +23,24 @@
   (let [edges (uber/find-edges graph {:src (solver/get-graph-start-node graph)})]
     (map #(create-plan graph %) edges)))
 
-(defn process-graphs [status msg-chan response-chan]
+(defn process-graphs [status msg-chan response-chan error-chan]
   (async/go (while (= @status :running)
-              (let [graph (async/<! msg-chan)
-                    edges (uber/find-edges graph {:src (solver/get-graph-start-node graph)})
-                    order-plans (create-plans graph)]
-                (async/>! response-chan order-plans)))
+              (try (let [graph (async/<! msg-chan)
+                         edges (uber/find-edges graph {:src (solver/get-graph-start-node graph)})
+                         order-plans (create-plans graph)]
+                     (async/>! response-chan order-plans))
+                   (catch Exception e (async/>! Exception e))))
             (async/close! msg-chan)))
 
-(defrecord Order-plan-creator [status msg-chan msg-response-chan]
+(defrecord Order-plan-creator [status msg-chan msg-response-chan error-chan]
   component/Lifecycle
   (start [component]
     (reset! (:status component) :running)
-    (process-graphs status msg-chan msg-response-chan)
+    (process-graphs status msg-chan msg-response-chan error-chan)
     component)
   (stop [component]
     (reset! (:status component) :stopped)
     component))
 
-(defn new-order-plan-creator [msg-request-chan msg-response-chan]
-  (->Order-plan-creator (atom :init) msg-request-chan msg-response-chan))
+(defn new-order-plan-creator [msg-request-chan msg-response-chan error-chan]
+  (->Order-plan-creator (atom :init) msg-request-chan msg-response-chan error-chan))

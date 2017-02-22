@@ -6,22 +6,23 @@
 ; Component that expects a map that contains a key :product
 ; groups the same products in a single vector.
 
-(defn process-schedules [status msg-chan response-chan]
+(defn process-schedules [status msg-chan response-chan error-chan]
   (async/go (while (= @status :running)
               (let [msg (async/<! msg-chan)
-                    grouped (group-by :product msg)]
+                    grouped (try (group-by :product msg)
+                                 (catch Exception e (async/>! error-chan e)))]
                 (doseq [product grouped] (async/>! response-chan (val product)))))
             (async/close! msg-chan)))
 
-(defrecord Product-chunker [status msg-chan response-chan]
+(defrecord Product-chunker [status msg-chan response-chan error-chan]
   component/Lifecycle
   (start [component]
     (reset! (:status component) :running)
-    (process-schedules status msg-chan response-chan)
+    (process-schedules status msg-chan response-chan error-chan)
     component)
   (stop [component]
     (reset! (:status component) :stopped)
     component))
 
-(defn new-product-chunker [msg-request-chan msg-response-chan]
-  (->Product-chunker (atom :init) msg-request-chan msg-response-chan))
+(defn new-product-chunker [msg-request-chan msg-response-chan error-chan]
+  (->Product-chunker (atom :init) msg-request-chan msg-response-chan error-chan))

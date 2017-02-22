@@ -8,11 +8,12 @@
 
 (def response-ch (async/chan))
 (def req-ch (async/chan))
+(def error-ch (async/chan))
 (def component-state (atom :running))
 (def graph solver/graph-1)
 
 
 (deftest test-assemble-network
-  (do (opc/process-graphs component-state req-ch response-ch)
+  (do (opc/process-graphs component-state req-ch response-ch error-ch)
       (async/>!! req-ch graph)
       (is (= 0 (:qty (first (async/<!! response-ch)))))))
