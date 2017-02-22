@@ -9,6 +9,5 @@
 
 
 (deftest test-error-writer
-  (do (writer/process-errors  error-ch)
-      (async/>!! "error")
-      (is (= 5 (uber/count-nodes (async/<!! response-ch))))))
+  (do (writer/process-errors  (atom :running) error-ch)
+      (async/>!! error-ch "error" )))
