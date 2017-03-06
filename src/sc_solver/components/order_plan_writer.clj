@@ -10,9 +10,9 @@
   (env :plans))
 
 (defn write-order-plans [ops]
-  (let [product (:product (first ops))
+  (let [product (:product (first (first ops)))
         file-name (str op-directory "order-plan-product-" product ".json")
-        op-json (generate-string ops)]
+        op-json (generate-string ops {:pretty true})]
     (spit file-name op-json)))
 
 (defn process-order-plans [status msg-chan error-chan]

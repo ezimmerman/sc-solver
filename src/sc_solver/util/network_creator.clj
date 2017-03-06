@@ -1,6 +1,7 @@
 (ns sc-solver.util.network-creator
   (:require [sc-solver.domain :refer :all]
-            [environ.core :refer [env]]))
+            [environ.core :refer [env]]
+            [clj-time.core :as t]))
 
 (def stores
   (read-string (env :stores)))
@@ -15,8 +16,8 @@
   (read-string (env :products)))
 
 (defn make-vendor
-  [number]
-  (->Vendor "vendor" "vendor" number))
+  [number day]
+  (->Vendor "vendor" "vendor" number day))
 
 (defn make-store
   [number inventory target]
@@ -44,7 +45,7 @@
 (defn network
   "Make a network based on the product, and how many DCs you want and stores per DC."
   [product number-dcs number-stores]
-  (let [vendor (make-vendor product)
+  (let [vendor (make-vendor product (t/today-at-midnight))
         dcs (map #(make-dc %) (range 0 number-dcs))
         stores (map #(make-store % (rand-int 100) (rand-int 100)) (range 0 number-stores))]
     (make-schedules product vendor dcs stores))

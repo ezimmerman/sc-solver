@@ -4,11 +4,10 @@
   "Return the types attributes"
   (attributes [x]))
 
-; Todo remove requirement to have flow-amount
-(defrecord Vendor [name type product]
+(defrecord Vendor [name type product day]
   Attributes
   (attributes [x]
-    (hash-map :name name :type type :product product)))
+    (hash-map :name name :type type :product product :day day)))
 
 (defrecord Dc [name type]
   Attributes

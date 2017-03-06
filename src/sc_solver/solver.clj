@@ -1,10 +1,14 @@
 (ns sc-solver.solver
   (:require [ubergraph.core :as uber]
-            [ubergraph.alg :as alg]))
+            [ubergraph.alg :as alg]
+            [clj-time.core :as t]
+            [sc-solver.services.forecast :as f]))
 
 (def store "store")
 
 (def dc "dc")
+
+(def vendor "vendor")
 
 (defn get-flow-amount [graph edge]
   (uber/attr graph edge :flow-amount))
@@ -12,11 +16,33 @@
 (defn get-edge-max [graph edge]
   (uber/attr graph edge :max))
 
+(defn get-inventory [graph node]
+  (uber/attr graph node :inventory))
+
 (defn get-existing-inventory [graph edge]
   (uber/attr graph (uber/dest edge) :inventory))
 
 (defn get-target-inventory [graph edge]
   (uber/attr graph (uber/dest edge) :target))
+
+(defn get-location
+  [graph node]
+  (uber/attr graph node :location))
+
+(defn is-vendor-node?
+  [graph node]
+  (= (uber/attr graph node :type) vendor))
+
+(defn get-vendor [graph]
+  (first (filter #(is-vendor-node? graph %) (uber/nodes graph))))
+
+(defn get-day
+  [graph]
+  (uber/attr graph (get-vendor graph) :day))
+
+(defn get-product
+  [graph]
+  (uber/attr graph (get-vendor graph) :product))
 
 (defn get-edge-dest-type
   "Given an edge returns the type of the destination."
@@ -30,8 +56,15 @@
 (defn is-dest-node-store? [graph edge]
   (if (= (get-edge-dest-type graph edge) store) true false))
 
+;todo make this dynamic not hard coded.
 (defn get-graph-start-node [graph]
   :vendor)
+
+(defn get-store-edges [graph]
+  (filter #(is-dest-node-store? graph %) (uber/edges graph)))
+
+(defn get-store-nodes [graph]
+  (filter #(is-store-node? graph %) (uber/nodes graph)))
 
 (defn incremment-flow-amount
   [graph edge]
@@ -52,7 +85,7 @@
                                target-inventory (get-target-inventory graph edge)]
                            (cond
                              (>= total-inventory target-inventory) (Integer/MAX_VALUE)
-                             :else  (/ target-inventory (- target-inventory total-inventory))))
+                             :else (/ target-inventory (- target-inventory total-inventory))))
                  "dc" 0))))
 
 (defn is-edge-under-max-constraint? [graph edge]
@@ -106,4 +139,65 @@
           g
           (recur (incremment-flow-amounts path g))))
       g)))
+
+(defn increment-vendor-date
+  "Increment the Vendors date by one day."
+  [graph]
+  (let [vendor-node (get-vendor graph)]
+    (uber/add-attr graph vendor-node :day (t/plus (uber/attr graph vendor-node :day) (t/days 1)))))
+
+(defn update-nodes-inventory
+  "Return a graph with new inventory. Update the inventory on the node with the new inventory."
+  [graph node inventory]
+  (uber/add-attr graph node :inventory inventory))
+
+(defn update-store-inventory
+  "Return a graph with updated store inventory. Get previous days inventory from the store node
+  (the dest on the edge-to-store) subtract sales forecast add previous flow amount."
+  [graph edge-to-store]
+  (let [yesterday-inventory (get-existing-inventory graph edge-to-store)
+        vendor (get-vendor graph)
+        store (uber/dest edge-to-store)
+        sales-forecast (f/get-forecast (get-product graph) (get-location graph store) (get-day graph) yesterday-inventory)]
+    (update-nodes-inventory graph store (- (+ yesterday-inventory (get-flow-amount graph edge-to-store)) sales-forecast))))
+
+(defn update-inventory
+  "Return a graph with updated inventory. Roll the inventory over from previous day.
+  Update with sales forecast and deliveries."
+  [graph]
+  (let [store-edges (get-store-edges graph)]
+    (reduce #(update-store-inventory %1 %2) graph store-edges)))
+
+(defn clear-flow-amount
+  [graph edge]
+  (uber/add-attr graph edge :flow-amount nil))
+
+(defn clear-flow-amounts
+  [graph]
+  (reduce #(clear-flow-amount %1 %2) graph (get-store-nodes graph)))
+
+(defn next-day
+  "Returns next day graph. On new graph: 1. update vendor date 2. Change inventory = previous-inventory - sales-forecast + flow amount.
+  3. clear flow amounts on edges."
+  [previous-day-graph]
+  (->> previous-day-graph
+       (increment-vendor-date)
+       (update-inventory)
+       (clear-flow-amounts)))
+
+;todo revisit implementation.  It's got a bad smell.
+(defn flow-for-days
+  "Solve each day starting at first day to days. Solving the next day requires the previous day.
+    Return vector of solved graphs."
+  [graph days]
+  (loop [g graph
+         graphs []]
+    (if (< (count graphs) days)
+      (let [next-graph (->> g
+                            (next-day)
+                            (flow-graph))
+            added-graphs (conj graphs next-graph)]
+        (recur next-graph added-graphs))
+      graphs)))
+
 

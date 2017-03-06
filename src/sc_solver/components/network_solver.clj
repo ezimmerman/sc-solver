@@ -6,9 +6,10 @@
             [environ.core :refer [env]]))
 
 (def solver-procs (read-string (env :solver-procs)))
+(def days (read-string (env :days)))
 
 (defn process-graphs [msg-chan response-chan error-chan]
-  (async/pipeline solver-procs response-chan (map (try solver/flow-graph
+  (async/pipeline solver-procs response-chan (map (try #(solver/flow-for-days %1 days)
                                                        (catch Exception e (async/>!! error-chan e)))) msg-chan))
 
 (defrecord Network-solver [msg-chan response-chan error-chan]
