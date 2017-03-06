@@ -9,9 +9,6 @@
 (def dcs
   (read-string (env :dcs)))
 
-(def days
-  (read-string (env :days)))
-
 (def products
   (read-string (env :products)))
 

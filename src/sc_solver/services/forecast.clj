@@ -8,4 +8,4 @@
 (defn get-forecast
   "Given a product, location and day, return the sales forecast"
   [product location day inventory]
-  (int (* inventory (* (rand-int 25) 0.01))))
+  (int (* inventory (* (rand-int 75) 0.01))))
