@@ -17,8 +17,8 @@
   (->Vendor "vendor" "vendor" number day))
 
 (defn make-store
-  [number inventory target]
-  (->Store (str "store" "-" number) "store" inventory target))
+  [number inventory target pres-mins]
+  (->Store (str "store" "-" number) "store" inventory target pres-mins))
 
 (defn make-dc
   [number]
@@ -44,11 +44,10 @@
   [product number-dcs number-stores]
   (let [vendor (make-vendor product (t/today-at-midnight))
         dcs (map #(make-dc %) (range 0 number-dcs))
-        stores (map #(make-store % (rand-int 100) (rand-int 100)) (range 0 number-stores))]
+        stores (map #(make-store % (rand-int 20) (rand-int 20) (rand-int 5)) (range 0 number-stores))]
     (make-schedules product vendor dcs stores))
   )
 
-;Todo support a range of days accross products.
 (defn make-network
   "Reads in env and creates a seq of schedules"
   []

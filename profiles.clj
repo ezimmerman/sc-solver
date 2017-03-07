@@ -1,9 +1,9 @@
-{:dev  {:env {:dcs            "5"
+{:dev  {:env {:dcs            "10"
               :stores         "200"
               :products       "1000"
               :days           "30"
               :plans          "./plans/"
-              :solver-procs   "6"
+              :solver-procs   "7"
               :assemble-procs "4"
               :forecast-procs "2"}}
  :test {:env {:dcs            "1"

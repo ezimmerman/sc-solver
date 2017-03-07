@@ -76,7 +76,7 @@
   (let [edges (alg/edges-in-path path)]
     (reduce incremment-flow-amount graph edges)))
 
-(defn utility-fn
+(defn profit-tier-utility-fn
   "Given an edge calcuate the utility of the next product"
   [graph]
   (fn [edge] (let [dest (get-edge-dest-type graph edge)]
@@ -103,24 +103,23 @@
         edges (alg/edges-in-path path)]
     (reduce #(if-not (is-edge-under-max-constraint? graph %2) (reduced false) %) true edges)))
 
-(defn is-edge-valid-fn
+(defn profit-tier-is-edge-valid-fn
   "Return a function that given an edge will check to see if dest is store if so, check to see if
   it's utility is < 0 "
   [graph]
   (fn [edge]
-    (let [utility-fn (utility-fn graph)]
+    (let [utility-fn (profit-tier-utility-fn graph)]
       (cond
         (= Integer/MAX_VALUE (utility-fn edge)) false
         (and (is-dest-node-store? graph edge) (is-edge-under-max-constraint? graph edge) (not= Integer/MAX_VALUE (utility-fn edge))) (< 0 (utility-fn edge))
         (and (is-dest-node-store? graph edge) (not (is-edge-under-max-constraint? graph edge))) false
         :else true))))
 
-(defn is-end-node-fn
+(defn is-profit-tier-end-node-fn
   "Return a function that determines if we have an end node.  Currently assumes a single inbound edge."
   [graph]
   (fn [node]
-    (let [utility-fn (utility-fn graph)]
-
+    (let [utility-fn (profit-tier-utility-fn graph)]
       (cond
         (and (is-store-node? graph node) (is-edges-to-end-node-valid? graph node)) (< 0 (utility-fn (first (uber/in-edges graph node))))
         :else false))))
@@ -134,7 +133,7 @@
   [graph]
   (loop [g graph]
     (if (have-end-nodes? g)
-      (let [path (alg/shortest-path g {:start-node (get-graph-start-node g) :end-node? (is-end-node-fn g) :cost-fn (utility-fn g) :edge-filter (is-edge-valid-fn g)})]
+      (let [path (alg/shortest-path g {:start-node (get-graph-start-node g) :end-node? (is-profit-tier-end-node-fn g) :cost-fn (profit-tier-utility-fn g) :edge-filter (profit-tier-is-edge-valid-fn g)})]
         (if (nil? path)
           g
           (recur (incremment-flow-amounts path g))))

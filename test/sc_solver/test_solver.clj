@@ -9,9 +9,9 @@
 (def graph-1 (-> (uber/digraph
                    [:vendor {:type "vendor" :name "vendor" :product 0 :day (t/today-at-midnight)}]
                    [:dc-0 {:name "dc-0" :type "dc"}]
-                   [:store-0 {:inventory 20 :target 50 :type "store"}]
-                   [:store-1 {:inventory 50 :target 50 :type "store"}]
-                   [:store-2 {:inventory 30 :target 50 :type "store"}])
+                   [:store-0 {:inventory 20 :target 50 :type "store" :pres-mins 5}]
+                   [:store-1 {:inventory 50 :target 50 :type "store" :pres-mins 5}]
+                   [:store-2 {:inventory 30 :target 50 :type "store" :pres-mins 5}])
                  (uber/add-directed-edges [:vendor :dc-0 {:flow-amount 0 :lead-time 1 :max nil}]
                                           [:dc-0 :store-0 {:flow-amount 0 :lead-time 2 :max nil}]
                                           [:dc-0 :store-1 {:flow-amount 0 :lead-time 2 :max nil}]
@@ -105,18 +105,18 @@
   (is (= 50 (s/get-target-inventory graph-1 (uber/find-edge graph-1 :dc-0 :store-0)))))
 
 (deftest test-utility-fn
-  (let [utility-fn (s/utility-fn graph-1)]
+  (let [utility-fn (s/profit-tier-utility-fn graph-1)]
     (is (= 5/3 (utility-fn (uber/find-edge graph-1 :dc-0 :store-0))))))
 
 (deftest is-edge-valid-fn
-  (let [is-edge-valid-1? (s/is-edge-valid-fn graph-1)
+  (let [is-edge-valid-1? (s/profit-tier-is-edge-valid-fn graph-1)
         edge-1 (uber/find-edge graph-1 :dc-0 :store-0)
         graph-2 (uber/add-attr graph-1 edge-1 :flow-amount (+ (uber/attr graph-1 edge-1 :flow-amount) 30))
         graph-3 (uber/add-attr graph-1 edge-1 :max 0)
         edge-3 (uber/find-edge graph-3 :dc-0 :store-0)
         edge-2 (uber/find-edge graph-2 :dc-0 :store-0)
-        is-edge-valid-2? (s/is-edge-valid-fn graph-2)
-        is-edge-valid-3? (s/is-edge-valid-fn graph-3)]
+        is-edge-valid-2? (s/profit-tier-is-edge-valid-fn graph-2)
+        is-edge-valid-3? (s/profit-tier-is-edge-valid-fn graph-3)]
     (is (= true (is-edge-valid-1? edge-1)))
     (is (= false (is-edge-valid-2? edge-2)))
     (is (= false (is-edge-valid-3? edge-3)))))
@@ -126,7 +126,7 @@
         store-0-node (uber/dest dc-store-0-edge)
         vendor-dc-0-edge (uber/find-edge graph-1 :vendor :dc-0)
         dc-node (uber/dest vendor-dc-0-edge)
-        is-end-node (s/is-end-node-fn graph-1)]
+        is-end-node (s/is-profit-tier-end-node-fn graph-1)]
     (is (= true (is-end-node store-0-node)))
     (is (= false (is-end-node dc-node)))))
 
@@ -134,7 +134,7 @@
   (is (= true (s/is-dest-node-store? graph-1 (uber/find-edge graph-1 :dc-0 :store-0)))))
 
 (deftest test-incremment-flow-amounts
-  (let [path (alg/shortest-path graph-1 {:start-node :vendor :end-nodes [:store-0 :store-1 :store-2] :cost-fn (s/utility-fn graph-1)})
+  (let [path (alg/shortest-path graph-1 {:start-node :vendor :end-nodes [:store-0 :store-1 :store-2] :cost-fn (s/profit-tier-utility-fn graph-1)})
         graph-2 (s/incremment-flow-amounts path graph-1)
         edges (alg/edges-in-path path)]
     (is (= 1 (uber/attr graph-2 (uber/find-edge graph-1 :vendor :dc-0) :flow-amount)))
