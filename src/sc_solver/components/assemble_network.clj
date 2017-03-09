@@ -6,6 +6,8 @@
             [ubergraph.alg :as alg]
             [environ.core :refer [env]]))
 
+; Component that creates a network from schedules domain objects.
+;
 (def assemble-procs (read-string (env :assemble-procs)))
 
 (defn create-nodes-for-schedule

@@ -11,6 +11,12 @@
             [sc-solver.components.error-writer :as e-writer])
   (:gen-class))
 
+; Main entry point for application.  "Assembles" the application
+; through core.async channels.  Meaning channels in and out of components
+; as the data passing mechanism. start-app begins the whole system
+; from schedules reader to the order plan writier.
+; all components write their erros to the error channel.
+
 (defn system []
   (let [schedules-reader-response-chan (async/chan 10)
         product-chunker-resp-chan (async/chan 10)

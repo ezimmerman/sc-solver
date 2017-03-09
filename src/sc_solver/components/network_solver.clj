@@ -5,6 +5,9 @@
             [clojure.tools.logging :as log]
             [environ.core :refer [env]]))
 
+; Expects an unsolved graph on the msg-chan then solves them pipelining
+; with the :solver-procs configuration set in the profiles.clj file.
+
 (def solver-procs (read-string (env :solver-procs)))
 (def days (read-string (env :days)))
 

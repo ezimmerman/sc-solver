@@ -1,10 +1,10 @@
 # Project
-Proof of concept using a graph to solve retail supply chain problems. Given a network of vendors, DCs, and stores, 
+Proof of concept using a graph to solve allocation and replenishment problems. Given a network of vendors, DCs, and stores,
 the solver will distribute product to satisfy edge max setting, and in order of need of the stores.  In the case of
 scarcity with a max set on an edge that will not allow a store to order up to it's target, the store with the greatest
 ratio between target and inventory will receive product first.
 
-It will solve for any graph so long as the graph is a DAG (Directed Acyclic Directed) graph.
+It will solve for any graph so long as the graph is a DAG (Directed Acyclic graph) with a single vendor.
 
 Edges will have their flow-amounts updated to show the total amount of product that flowed through that edge to supply 
 the stores.
@@ -19,11 +19,12 @@ The second way of running this is auto solving generated networks and saving the
 See below for details on how to run each.
 
 ## Motivation
-To show a graph library can be used to greatly simplify the SC problem space.
+To show a graph library can be used to greatly simplify the allocation/replenishment problem space.
 
 ## Getting Started  with visual sample
 ### Prerequisites ###
 
+[clojure] (https://clojure.org)
 [Leiningen] (http://leiningen.org)
 [graphviz] (http://www.graphviz.org)
 
@@ -70,6 +71,8 @@ From working leiningen installation
 - In the repl execute `(start-app)` Start app doesn't exit at this time, you will know sc-solver is done when
 the number of plans saved in the configured plans location equals the number of products configured (see below for configuration).
 On unix you can check the number of plans written with `ls *.json | wc -l` in the saved plans directory.
+
+Not supported yet, but would be easy to do is to output recommended distribution quantities (Dcs to stores).
 
 ##### Configuration options.
 sc-solver/profiles.clj provides a number of configuration options for the dev, and test leiningen profiles.

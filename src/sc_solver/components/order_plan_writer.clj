@@ -5,6 +5,9 @@
             [clojure.tools.logging :as log]
             [clojure.java.io :as io]
             [environ.core :refer [env]]))
+; Write the order plans to the file system
+; Gets the location to write to from the :plans configureation in
+; profiles.clj
 
 (def op-directory
   (env :plans))

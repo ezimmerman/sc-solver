@@ -3,6 +3,8 @@
             [clojure.core.async :as async]
             [clojure.tools.logging :as log]))
 
+; Gets error messages from the error-chan and simply logs them.
+
 (defn process-errors [status  error-chan]
   (async/go (while (= @status :running)
               (log/error (async/<! error-chan)))

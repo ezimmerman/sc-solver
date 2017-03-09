@@ -14,10 +14,10 @@
   (attributes [x]
     (hash-map :name name :type type)))
 
-(defrecord Store [name type inventory target pres-mins]
+(defrecord Store [name type inventory target]
   Attributes
   (attributes [x]
-    (hash-map :name name :type type :target target :inventory inventory :pres-mins)))
+    (hash-map :name name :type type :target target :inventory inventory)))
 
 (defrecord Schedule [product
                      source

@@ -3,6 +3,10 @@
             [environ.core :refer [env]]
             [clj-time.core :as t]))
 
+; This is simply a util namespace to create mock network schedules
+; In the real world we would want to read these from a database, or
+; consume them from an external feed.
+
 (def stores
   (read-string (env :stores)))
 
@@ -17,8 +21,8 @@
   (->Vendor "vendor" "vendor" number day))
 
 (defn make-store
-  [number inventory target pres-mins]
-  (->Store (str "store" "-" number) "store" inventory target pres-mins))
+  [number inventory target]
+  (->Store (str "store" "-" number) "store" inventory target))
 
 (defn make-dc
   [number]
@@ -44,7 +48,7 @@
   [product number-dcs number-stores]
   (let [vendor (make-vendor product (t/today-at-midnight))
         dcs (map #(make-dc %) (range 0 number-dcs))
-        stores (map #(make-store % (rand-int 20) (rand-int 20) (rand-int 5)) (range 0 number-stores))]
+        stores (map #(make-store % (rand-int 20) (rand-int 20)) (range 0 number-stores))]
     (make-schedules product vendor dcs stores))
   )
 

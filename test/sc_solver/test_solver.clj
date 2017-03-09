@@ -9,13 +9,27 @@
 (def graph-1 (-> (uber/digraph
                    [:vendor {:type "vendor" :name "vendor" :product 0 :day (t/today-at-midnight)}]
                    [:dc-0 {:name "dc-0" :type "dc"}]
-                   [:store-0 {:inventory 20 :target 50 :type "store" :pres-mins 5}]
-                   [:store-1 {:inventory 50 :target 50 :type "store" :pres-mins 5}]
-                   [:store-2 {:inventory 30 :target 50 :type "store" :pres-mins 5}])
+                   [:store-0 {:inventory 20 :target 50 :type "store"}]
+                   [:store-1 {:inventory 50 :target 50 :type "store"}]
+                   [:store-2 {:inventory 30 :target 50 :type "store"}])
                  (uber/add-directed-edges [:vendor :dc-0 {:flow-amount 0 :lead-time 1 :max nil}]
                                           [:dc-0 :store-0 {:flow-amount 0 :lead-time 2 :max nil}]
                                           [:dc-0 :store-1 {:flow-amount 0 :lead-time 2 :max nil}]
                                           [:dc-0 :store-2 {:flow-amount 0 :lead-time 3 :max nil}])
+                 ))
+
+(def graph-deep (-> (uber/digraph
+                   [:vendor {:type "vendor" :name "vendor" :product 0 :day (t/today-at-midnight)}]
+                   [:dc-0 {:name "ndc-0" :type "dc"}]
+                   [:dc-1 {:name "dc-1" :type "dc"}]
+                   [:store-0 {:inventory 20 :target 50 :type "store"}]
+                   [:store-1 {:inventory 50 :target 50 :type "store"}]
+                   [:store-2 {:inventory 30 :target 50 :type "store"}])
+                 (uber/add-directed-edges [:vendor :dc-0 {:flow-amount 0 :lead-time 1 :max nil}]
+                                          [:dc-0 :dc-1 {:flow-amount 0 :lead-time 1 :max nil}]
+                                          [:dc-1 :store-0 {:flow-amount 0 :lead-time 2 :max nil}]
+                                          [:dc-1 :store-1 {:flow-amount 0 :lead-time 2 :max nil}]
+                                          [:dc-1 :store-2 {:flow-amount 0 :lead-time 3 :max nil}])
                  ))
 
 (def graph-dc-store-constrained (-> (uber/digraph

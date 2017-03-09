@@ -3,6 +3,13 @@
             [clojure.core.async :as async]
             [sc-solver.util.network-creator :as nc]))
 
+; This component is would need to be swapped out in product.
+; It's purpose is to create schedules.  This schedules reader
+; Simpley uses the network-creator to create arbitrary schedules.
+; We would want to swap this out for something that pulls in schedules
+; from a feed, or persistence store.
+; Data format put on channel is:
+
 (defn read-schedules [status response-chan error-chan]
   (async/go
     (async/>! response-chan (try (nc/make-network)

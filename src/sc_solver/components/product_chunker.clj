@@ -5,6 +5,8 @@
 
 ; Component that expects a map that contains a key :product
 ; groups the same products in a single vector.
+; Expects a vector of schedules on the msg-chan.
+; Puts a map of schedules keyed by product.  For instance {1: [schedule 1 schedule 2 etc]}
 
 (defn process-schedules [status msg-chan response-chan error-chan]
   (async/go (while (= @status :running)

@@ -5,6 +5,7 @@
 ; anywhere from 0% to 25% of inventory.
 ;todo this interface isn't reasonable.  We don't want inventory.
 
+; Mock forecast creating a random sales forecast.
 (defn get-forecast
   "Given a product, location and day, return the sales forecast"
   [product location day inventory]

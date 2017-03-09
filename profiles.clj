@@ -1,7 +1,7 @@
 {:dev  {:env {:dcs            "10"
               :stores         "200"
               :products       "1000"
-              :days           "30"
+              :days           "1"
               :plans          "./plans/"
               :solver-procs   "7"
               :assemble-procs "4"

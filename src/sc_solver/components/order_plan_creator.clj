@@ -9,6 +9,9 @@
             [clj-time.coerce :as c])
   (:import (java.util Date)))
 
+; Expects a graph on the msg-chan.  Takes the graph and
+; creates order plans.  Order plans in the form of the order plans
+; in the domain namespace.
 
 (defn create-plan [graph graph-edge]
   (let [src-node (uber/src graph-edge)
